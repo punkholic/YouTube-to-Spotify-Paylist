@@ -5,6 +5,8 @@ from spotipy.oauth2 import SpotifyOAuth
 import os
 from dotenv import load_dotenv
 import argparse
+import pickle
+import time
 
 load_dotenv()
 
@@ -77,17 +79,27 @@ def search_track_uris(song_names, playlist_id):
     for name in song_names:
         if not name.strip():
             continue
-        results = sp.search(q=name, type='track', limit=1)
-        tracks = results.get('tracks', {}).get('items', [])
-        if tracks:
-            track_uri = tracks[0]['uri']
-            if track_uri not in existing_tracks:
-                uris.append(track_uri)
-                print(f"Found: {name} → {tracks[0]['name']} by {tracks[0]['artists'][0]['name']}")
-            else:
-                print(f"Already in playlist: {name}")
-        else:
-            print(f"Not found: {name}")
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                results = sp.search(q=name, type='track', limit=1)
+                tracks = results.get('tracks', {}).get('items', [])
+                if tracks:
+                    track_uri = tracks[0]['uri']
+                    if track_uri not in existing_tracks:
+                        uris.append(track_uri)
+                        print(f"Found: {name} → {tracks[0]['name']} by {tracks[0]['artists'][0]['name']}")
+                    else:
+                        print(f"Already in playlist: {name}")
+                else:
+                    print(f"Not found: {name}")
+                break
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Retrying search for {name} due to error: {str(e)}")
+                    time.sleep(2)  # Wait before retrying
+                else:
+                    print(f"Failed to search for {name} after {max_retries} attempts: {str(e)}")
     return uris
 
 if __name__ == "__main__":
@@ -105,8 +117,16 @@ if __name__ == "__main__":
     playlist_id = get_or_create_playlist(args.playlist_name)
     track_uris = search_track_uris(purged_titles, playlist_id)
 
+    # Save track URIs to a pickle file
+    with open('track_uris.pkl', 'wb') as f:
+        pickle.dump(track_uris, f)
+
     if track_uris:
-        sp.playlist_add_items(playlist_id=playlist_id, items=track_uris)
-        print("Added tracks to playlist.")
+        try:
+            sp.playlist_add_items(playlist_id=playlist_id, items=track_uris)
+            print("Added tracks to playlist.")
+        except Exception as e:
+            print(f"Error adding tracks: {str(e)}")
+            print("Track URIs saved to 'track_uris.pkl'. You can continue from here on the next run.")
     else:
         print("No valid tracks found to add.") 
