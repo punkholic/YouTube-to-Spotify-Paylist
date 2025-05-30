@@ -1,6 +1,61 @@
 # YouTube to Spotify Playlist Transfer
 
-This script fetches song titles from a YouTube playlist, purges them to extract just the song names, and then adds the first found match for each song to a Spotify playlist named "youtube".
+This script allows you to transfer songs from a YouTube playlist to a Spotify playlist named "youtube."
+
+## Prerequisites
+
+- Python 3.x
+- Required Python packages: `yt-dlp`, `spotipy`, `python-dotenv`
+
+## Setup
+
+1. **Environment Variables**: Create a `.env` file in the same directory as the script with the following variables:
+   ```
+   SPOTIPY_CLIENT_ID=your_client_id
+   SPOTIPY_CLIENT_SECRET=your_client_secret
+   SPOTIPY_REDIRECT_URI=your_redirect_uri
+   ```
+
+2. **Install Dependencies**: Run the following command to install the required packages:
+   ```sh
+   pip install yt-dlp spotipy python-dotenv
+   ```
+
+## Usage
+
+Run the script using the following command:
+```sh
+python3 yt2spotify.py
+```
+
+### Custom Arguments
+
+- **Playlist URL**: You can specify a custom YouTube playlist URL using the `--playlist_url` argument:
+  ```sh
+  python3 yt2spotify.py --playlist_url "https://www.youtube.com/playlist?list=YOUR_PLAYLIST_ID"
+  ```
+
+- **Playlist Name**: You can specify a custom name for the Spotify playlist using the `--playlist_name` argument:
+  ```sh
+  python3 yt2spotify.py --playlist_name "Your Playlist Name"
+  ```
+
+- **Delete Existing Playlists**: If you want to delete all existing playlists with the same name without being prompted, use the `--delete` flag:
+  ```sh
+  python3 yt2spotify.py --delete
+  ```
+
+## What the Script Does
+
+1. **Fetches Song Titles**: The script extracts song titles from the specified YouTube playlist.
+2. **Purges Titles**: It cleans up the titles to extract just the song names.
+3. **Searches on Spotify**: It searches for each song on Spotify and adds the first found match to the specified playlist.
+4. **Avoids Duplicates**: The script checks if a song is already in the playlist before adding it.
+
+## Additional Notes
+
+- Ensure that your Spotify app has the necessary permissions to modify playlists.
+- The script will prompt you to delete an existing playlist with the same name if it exists, unless the `--delete` flag is used.
 
 ## .env Variables
 
@@ -9,38 +64,6 @@ The following environment variables are required in a `.env` file:
 - `SPOTIPY_CLIENT_ID`: Your Spotify Client ID.
 - `SPOTIPY_CLIENT_SECRET`: Your Spotify Client Secret.
 - `SPOTIPY_REDIRECT_URI`: Your Spotify Redirect URI.
-
-## How to Use
-
-1. **Set Up Environment Variables**:
-   - Create a `.env` file in the project directory with the required variables.
-
-2. **Install Dependencies**:
-   - Ensure you have the required Python packages installed:
-     ```sh
-     pip install yt-dlp spotipy python-dotenv
-     ```
-
-3. **Run the Script**:
-   - Execute the script with the following command:
-     ```sh
-     python3 yt2spotify.py
-     ```
-
-## Running with Arguments
-
-To run the script with a custom YouTube playlist URL, you can modify the `playlist_url` variable in the script or pass it as an argument. For example:
-
-```sh
-python3 yt2spotify.py --playlist_url "https://www.youtube.com/playlist?list=YOUR_PLAYLIST_ID"
-```
-
-## What the Script Does
-
-- **Fetches Titles**: Retrieves song titles from the specified YouTube playlist.
-- **Purges Titles**: Extracts just the song names by removing artist names, descriptors, and other non-essential text.
-- **Searches Spotify**: For each purged song name, it searches Spotify and adds the first found match to the "youtube" playlist.
-- **Avoids Duplicates**: Checks if the track already exists in the playlist before adding it.
 
 ## Notes
 

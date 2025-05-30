@@ -59,14 +59,25 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
 ))
 user_id = sp.current_user()['id']
 
-def get_or_create_playlist(playlist_name):
+def get_or_create_playlist(playlist_name, delete_existing=False):
     playlists = sp.current_user_playlists(limit=50)
     for playlist in playlists['items']:
         if playlist['name'].lower() == playlist_name.lower():
-            return playlist['id']
+            if delete_existing:
+                sp.user_playlist_unfollow(user=user_id, playlist_id=playlist['id'])
+                print(f"Deleted playlist: {playlist_name}")
+            else:
+                response = input(f"Playlist '{playlist_name}' already exists. Do you want to delete it? (y/n): ")
+                if response.lower() == 'y':
+                    sp.user_playlist_unfollow(user=user_id, playlist_id=playlist['id'])
+                    print(f"Deleted playlist: {playlist_name}")
+                else:
+                    print("Using existing playlist.")
+                    return playlist['id']
     new_playlist = sp.user_playlist_create(user=user_id, name=playlist_name, public=False)
     print(f"Created playlist: {playlist_name}")
     return new_playlist['id']
+
 
 def search_track_uris(song_names, playlist_id):
     uris = []
@@ -108,25 +119,39 @@ if __name__ == "__main__":
                         help='URL of the YouTube playlist to process')
     parser.add_argument('--playlist_name', type=str, default='youtube',
                         help='Name of the Spotify playlist to create or use')
+    parser.add_argument('--delete', action='store_true',
+                        help='Delete all existing playlists with the same name without prompting')
     args = parser.parse_args()
 
-    titles = get_playlist_titles(args.playlist_url)
-    purged_titles = [extract_song_name(t) for t in titles]
-    print(f"Purged song names: {purged_titles[:10]} ... (total: {len(purged_titles)})")
+    # Extract playlist ID from the URL
+    playlist_id_tosave = args.playlist_url.split('list=')[-1]
+    pickle_file = f'track_uris_{playlist_id_tosave}.pkl'
+    playlist_id = get_or_create_playlist(args.playlist_name, args.delete)
 
-    playlist_id = get_or_create_playlist(args.playlist_name)
-    track_uris = search_track_uris(purged_titles, playlist_id)
+    if os.path.exists(pickle_file):
+        print(f"Loading existing track URIs from {pickle_file}.")
+        with open(pickle_file, 'rb') as f:
+            track_uris = pickle.load(f)
+    else:
+        print("No existing track URIs found. Searching for new tracks...")
+        titles = get_playlist_titles(args.playlist_url)
+        purged_titles = [extract_song_name(t) for t in titles]
+        print(f"Purged song names: {purged_titles[:10]} ... (total: {len(purged_titles)})")
+        track_uris = search_track_uris(purged_titles, playlist_id)
+        with open(pickle_file, 'wb') as f:
+            pickle.dump(track_uris, f)
 
-    # Save track URIs to a pickle file
-    with open('track_uris.pkl', 'wb') as f:
-        pickle.dump(track_uris, f)
-
+    print(f"Found {len(track_uris)} tracks")
     if track_uris:
-        try:
-            sp.playlist_add_items(playlist_id=playlist_id, items=track_uris)
-            print("Added tracks to playlist.")
-        except Exception as e:
-            print(f"Error adding tracks: {str(e)}")
-            print("Track URIs saved to 'track_uris.pkl'. You can continue from here on the next run.")
+        # Add tracks in batches of 100
+        batch_size = 100
+        for i in range(0, len(track_uris), batch_size):
+            batch = track_uris[i:i + batch_size]
+            try:
+                sp.playlist_add_items(playlist_id=playlist_id, items=batch)
+                print(f"Added tracks {i + 1} to {i + len(batch)} to playlist.")
+            except Exception as e:
+                print(f"Error adding tracks {i + 1} to {i + len(batch)}: {str(e)}")
+                print("Track URIs saved to 'track_uris.pkl'. You can continue from here on the next run.")
     else:
         print("No valid tracks found to add.") 
