@@ -32,19 +32,30 @@ def get_playlist_titles(playlist_url):
             return []
 
 def extract_song_name(title):
-    
+    # Remove common YouTube title additions
     title = re.sub(r"\[.*?\]|\(.*?\)", "", title)
-    title = re.split(r"[-:–—|]", title, maxsplit=1)
-    if len(title) > 1:
-        title = title[1]
+    
+    # Split on common delimiters, but keep both parts
+    parts = re.split(r"[-:–—|]", title, maxsplit=1)
+    
+    # Clean up each part
+    cleaned_parts = []
+    for part in parts:
+        # Remove common YouTube video indicators
+        part = re.sub(r"\b(official|video|lyrics?|audio|remastered|live|hd|hq|full album|feat\.?|ft\.?)\b", "", part, flags=re.I)
+        # Remove leading/trailing non-alphanumeric characters
+        part = re.sub(r"^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$", "", part)
+        # Normalize whitespace
+        part = re.sub(r"\s+", " ", part)
+        cleaned_parts.append(part.strip())
+    
+    # If we have two parts, assume first is artist and second is song
+    if len(cleaned_parts) > 1:
+        artist = cleaned_parts[0]
+        song = cleaned_parts[1]
+        return f"{artist} - {song}"
     else:
-        title = title[0]
-    
-    title = re.sub(r"\b(official|video|lyrics?|audio|remastered|live|hd|hq|full album|feat\.?|ft\.?)\b", "", title, flags=re.I)
-    title = re.sub(r"^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$", "", title)
-    
-    title = re.sub(r"\s+", " ", title)
-    return title.strip()
+        return cleaned_parts[0]
 
 SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
@@ -122,7 +133,7 @@ if __name__ == "__main__":
     parser.add_argument('--delete', action='store_true',
                         help='Delete all existing playlists with the same name without prompting')
     args = parser.parse_args()
-
+    print(args.playlist_url)
     # Extract playlist ID from the URL
     playlist_id_tosave = args.playlist_url.split('list=')[-1]
     pickle_file = f'track_uris_{playlist_id_tosave}.pkl'
