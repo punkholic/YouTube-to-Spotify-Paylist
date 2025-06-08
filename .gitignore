@@ -1,2 +1,5 @@
 .cache
-.env 
+.env
+client_secrets.json
+token.pickle
+bakup.pkl

@@ -2,8 +2,8 @@
 
 A collection of scripts to migrate playlists between Spotify and YouTube. This repository contains two main scripts:
 
-1. [YouTube to Spotify Playlist Migrator](README/yt2spotify_README.md) - Migrate playlists from YouTube to Spotify
-2. [Spotify to YouTube Playlist Migrator](README/spotify2yt_README.md) - Migrate playlists from Spotify to YouTube
+1. [YouTube to Spotify Playlist Migrator](yt2spotify_README.md) - Migrate playlists from YouTube to Spotify
+2. [Spotify to YouTube Playlist Migrator](spotify2yt_README.md) - Migrate playlists from Spotify to YouTube
 
 ## Overview
 
@@ -32,12 +32,9 @@ cd spotify-youtube-migrator
 pip install -r requirements.txt
 ```
 
-3. Set up API credentials:
-   - See [API Setup Guide](README/API_SETUP.md) for detailed instructions on setting up Spotify and YouTube API credentials
-
-4. Choose your migration direction:
-   - For YouTube to Spotify: See [YouTube to Spotify Guide](README/yt2spotify_README.md)
-   - For Spotify to YouTube: See [Spotify to YouTube Guide](README/spotify2yt_README.md)
+3. Choose your migration direction:
+   - For YouTube to Spotify: See [YouTube to Spotify Guide](yt2spotify_README.md)
+   - For Spotify to YouTube: See [Spotify to YouTube Guide](spotify2yt_README.md)
 
 ## Requirements
 
@@ -52,10 +49,8 @@ pip install -r requirements.txt
 ```
 spotify-youtube-migrator/
 ├── README.md                 # This file
-├── README/                   # Documentation directory
-│   ├── API_SETUP.md         # API credentials setup guide
-│   ├── yt2spotify_README.md  # YouTube to Spotify documentation
-│   └── spotify2yt_README.md  # Spotify to YouTube documentation
+├── yt2spotify_README.md      # YouTube to Spotify documentation
+├── spotify2yt_README.md      # Spotify to YouTube documentation
 ├── yt2spotify.py            # YouTube to Spotify script
 ├── spotify2yt.py            # Spotify to YouTube script
 ├── requirements.txt         # Python dependencies
