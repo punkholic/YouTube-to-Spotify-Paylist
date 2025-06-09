@@ -11,7 +11,7 @@ This guide will walk you through setting up the necessary API credentials for bo
    - App name: "Spotify-YouTube Migrator" (or any name you prefer)
    - App description: "A tool to migrate playlists between Spotify and YouTube"
    - Website: (Optional) Your website or GitHub repo
-   - Redirect URI: `http://localhost:8888/callback`
+   - Redirect URI: `https://7cfe-2400-1a00-1b2c-5edf-4042-f862-4f9a-3909.ngrok-free.app/callback`
 5. Accept the terms and click "Create"
 6. Once created, you'll see your:
    - Client ID
@@ -20,7 +20,7 @@ This guide will walk you through setting up the necessary API credentials for bo
    ```
    SPOTIPY_CLIENT_ID=your_client_id_here
    SPOTIPY_CLIENT_SECRET=your_client_secret_here
-   SPOTIPY_REDIRECT_URI=http://localhost:8888/callback
+   SPOTIPY_REDIRECT_URI=https://7cfe-2400-1a00-1b2c-5edf-4042-f862-4f9a-3909.ngrok-free.app/callback
    ```
 
 ## YouTube Data API v3 Setup
@@ -67,7 +67,7 @@ This guide will walk you through setting up the necessary API credentials for bo
    - Go back to your OAuth 2.0 Client ID
    - Click the edit (pencil) icon
    - Under "Authorized redirect URIs", add:
-     - `http://localhost:8080/`
+     - `https://7cfe-2400-1a00-1b2c-5edf-4042-f862-4f9a-3909.ngrok-free.app/`
    - Click "Save"
 
 ## Verifying Your Setup
@@ -76,7 +76,7 @@ This guide will walk you through setting up the necessary API credentials for bo
    ```
    SPOTIPY_CLIENT_ID=your_spotify_client_id
    SPOTIPY_CLIENT_SECRET=your_spotify_client_secret
-   SPOTIPY_REDIRECT_URI=http://localhost:8888/callback
+   SPOTIPY_REDIRECT_URI=https://7cfe-2400-1a00-1b2c-5edf-4042-f862-4f9a-3909.ngrok-free.app/callback
    ```
 
 2. Verify `client_secrets.json` is in your project directory
@@ -97,7 +97,7 @@ This guide will walk you through setting up the necessary API credentials for bo
 
 ### YouTube API Issues
 - If you get "redirect_uri_mismatch" error:
-  - Add `http://localhost:8080/` to authorized redirect URIs
+  - Add `https://7cfe-2400-1a00-1b2c-5edf-4042-f862-4f9a-3909.ngrok-free.app/` to authorized redirect URIs
 - If you get "access_denied" error:
   - Make sure you're added as a test user
   - Verify the YouTube scope is added

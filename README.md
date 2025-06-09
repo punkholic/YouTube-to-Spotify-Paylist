@@ -38,6 +38,7 @@ pip install -r requirements.txt
 
 3. Set up API credentials:
    - See [API Setup Guide](README/API_SETUP.md) for detailed instructions on setting up Spotify and YouTube API credentials
+   - Note: The setup uses an ngrok URL for OAuth redirects to ensure reliable authentication flow
 
 4. Choose your migration direction:
    - For YouTube to Spotify: See [YouTube to Spotify Guide](README/yt2spotify_README.md)
