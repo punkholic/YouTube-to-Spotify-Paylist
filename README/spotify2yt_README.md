@@ -1,6 +1,6 @@
 # Spotify to YouTube Playlist Migrator
 
-This script allows you to migrate your Spotify playlists to YouTube playlists. It uses the Spotify Web API and YouTube Data API v3 to transfer your music.
+This script allows you to migrate your Spotify playlists or liked songs to YouTube playlists. It uses the Spotify Web API and YouTube Data API v3 to transfer your music.
 
 ## Prerequisites
 
@@ -42,29 +42,40 @@ pip install -r requirements.txt
 
 ## Usage
 
-1. Basic usage (with default playlist name):
+1. Migrate a Spotify playlist (basic usage):
 ```bash
 python spotify2yt.py "https://open.spotify.com/playlist/YOUR_PLAYLIST_ID"
 ```
 
-2. With custom playlist name:
+2. Migrate liked songs:
+```bash
+python spotify2yt.py --liked-songs
+```
+
+3. Migrate liked songs with custom name:
+```bash
+python spotify2yt.py --liked-songs --name "My Liked Songs"
+```
+
+4. Migrate a playlist with custom name:
 ```bash
 python spotify2yt.py "https://open.spotify.com/playlist/YOUR_PLAYLIST_ID" --name "My Custom Playlist"
 ```
 
-3. With custom name and description:
+5. With custom name and description:
 ```bash
 python spotify2yt.py "https://open.spotify.com/playlist/YOUR_PLAYLIST_ID" --name "My Custom Playlist" --description "My favorite songs"
 ```
 
 Command-line Arguments:
-- `spotify_url` (required): The URL of your Spotify playlist
-- `--name`: Custom name for the YouTube playlist (default: "Spotify Playlist")
+- `spotify_url` (optional): The URL of your Spotify playlist (required if not using --liked-songs)
+- `--liked-songs`: Flag to migrate liked songs instead of a playlist
+- `--name`: Custom name for the YouTube playlist (default: "Spotify Playlist" or "Liked Songs")
 - `--description`: Custom description for the YouTube playlist (default: "Migrated from Spotify")
 
 The script will:
 - Open your browser for YouTube authentication
-- Fetch tracks from your Spotify playlist
+- Fetch tracks from your Spotify playlist or liked songs
 - Create a new private YouTube playlist
 - Search for each song on YouTube
 - Add the found videos to your playlist
@@ -72,6 +83,7 @@ The script will:
 ## Features
 
 - Migrates entire Spotify playlists to YouTube
+- Migrates liked songs to YouTube
 - Maintains song order
 - Handles rate limiting
 - Creates private playlists by default
@@ -87,6 +99,7 @@ The script will:
 - YouTube playlists are created as private by default
 - The script uses the first search result for each song
 - Rate limiting is implemented to avoid API quota issues
+- When migrating liked songs, the playlist will be named "Liked Songs" by default
 
 ## Troubleshooting
 

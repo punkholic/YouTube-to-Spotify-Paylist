@@ -22,7 +22,7 @@ load_dotenv()
 SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
 SPOTIPY_REDIRECT_URI = os.getenv('SPOTIPY_REDIRECT_URI')
-SCOPE = 'playlist-read-private playlist-read-collaborative'
+SCOPE = 'playlist-read-private playlist-read-collaborative user-library-read'
 
 # YouTube API setup
 YOUTUBE_API_SERVICE_NAME = "youtube"
@@ -68,6 +68,18 @@ def get_spotify_playlist_tracks(playlist_id):
     """Get all tracks from a Spotify playlist."""
     tracks = []
     results = sp.playlist_tracks(playlist_id)
+    tracks.extend(results['items'])
+    
+    while results['next']:
+        results = sp.next(results)
+        tracks.extend(results['items'])
+    
+    return tracks
+
+def get_spotify_liked_tracks():
+    """Get all liked tracks from Spotify."""
+    tracks = []
+    results = sp.current_user_saved_tracks()
     tracks.extend(results['items'])
     
     while results['next']:
@@ -149,15 +161,15 @@ def extract_playlist_id(playlist_url):
 def main():
     # Set up argument parser
     parser = argparse.ArgumentParser(description='Migrate Spotify playlist to YouTube')
-    parser.add_argument('spotify_url', help='Spotify playlist URL')
+    parser.add_argument('spotify_url', nargs='?', help='Spotify playlist URL (required if not using --liked-songs)')
     parser.add_argument('--name', help='YouTube playlist name (default: Spotify Playlist)', default='Spotify Playlist')
     parser.add_argument('--description', help='YouTube playlist description', default='Migrated from Spotify')
+    parser.add_argument('--liked-songs', action='store_true', help='Migrate liked songs instead of a playlist')
     args = parser.parse_args()
 
-    # Extract playlist ID from URL
-    playlist_id = extract_playlist_id(args.spotify_url)
-    if not playlist_id:
-        print("Invalid Spotify playlist URL. Please provide a valid URL.")
+    # Validate arguments
+    if not args.liked_songs and not args.spotify_url:
+        print("Error: Either provide a Spotify playlist URL or use --liked-songs flag")
         return
 
     # Set up YouTube API
@@ -167,12 +179,25 @@ def main():
         print("Failed to set up YouTube API. Exiting.")
         return
 
-    # Get Spotify playlist tracks
-    print(f"Fetching tracks from Spotify playlist...")
-    tracks = get_spotify_playlist_tracks(playlist_id)
+    # Get tracks based on mode
+    if args.liked_songs:
+        print("Fetching liked tracks from Spotify...")
+        tracks = get_spotify_liked_tracks()
+        if not args.name:
+            args.name = "Liked Songs"
+        if not args.description:
+            args.description = "Migrated from Spotify Liked Songs"
+    else:
+        # Extract playlist ID from URL
+        playlist_id = extract_playlist_id(args.spotify_url)
+        if not playlist_id:
+            print("Invalid Spotify playlist URL. Please provide a valid URL.")
+            return
+        print(f"Fetching tracks from Spotify playlist...")
+        tracks = get_spotify_playlist_tracks(playlist_id)
     
     if not tracks:
-        print("No tracks found in the Spotify playlist.")
+        print("No tracks found.")
         return
 
     # Create YouTube playlist
@@ -186,7 +211,12 @@ def main():
     # Search and add tracks
     video_ids = []
     for i, item in enumerate(tracks, 1):
-        track = item['track']
+        # Get track object based on mode
+        if args.liked_songs:
+            track = item['track']  # Liked songs have the track in a nested 'track' field
+        else:
+            track = item['track']  # Playlist items have the track in a nested 'track' field
+        
         if not track:
             continue
             
