@@ -20,7 +20,7 @@ This guide will walk you through setting up the necessary API credentials for bo
    ```
    SPOTIPY_CLIENT_ID=your_client_id_here
    SPOTIPY_CLIENT_SECRET=your_client_secret_here
-   SPOTIPY_REDIRECT_URI=http://localhost:8888/callback
+   SPOTIPY_REDIRECT_URI=https://localhost:8888/callback
    ```
 
 ## YouTube Data API v3 Setup
@@ -76,7 +76,7 @@ This guide will walk you through setting up the necessary API credentials for bo
    ```
    SPOTIPY_CLIENT_ID=your_spotify_client_id
    SPOTIPY_CLIENT_SECRET=your_spotify_client_secret
-   SPOTIPY_REDIRECT_URI=http://localhost:8888/callback
+   SPOTIPY_REDIRECT_URI=https://localhost:8888/callback
    ```
 
 2. Verify `client_secrets.json` is in your project directory
