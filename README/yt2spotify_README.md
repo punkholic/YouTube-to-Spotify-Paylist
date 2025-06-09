@@ -1,71 +1,93 @@
-# Spotify-YouTube Playlist Migrator
+# YouTube to Spotify Playlist Migrator
 
-A collection of scripts to migrate playlists between Spotify and YouTube. This repository contains two main scripts:
+This script allows you to migrate your YouTube playlists to Spotify playlists. It uses the YouTube Data API (via yt-dlp) and Spotify Web API to transfer your music.
 
-1. [YouTube to Spotify Playlist Migrator](yt2spotify_README.md) - Migrate playlists from YouTube to Spotify
-2. [Spotify to YouTube Playlist Migrator](spotify2yt_README.md) - Migrate playlists from Spotify to YouTube
+## Prerequisites
 
-## Overview
+- Python 3.6 or higher
+- A Spotify account
+- A YouTube playlist URL
+- YouTube Data API v3 enabled in Google Cloud Console
 
-This project provides tools to help you transfer your music playlists between Spotify and YouTube. Whether you're moving from one platform to another or just want to have your playlists available on both platforms, these scripts make the process easy and automated.
+## Installation
 
-## Features
-
-- Bidirectional playlist migration
-- Maintains song order
-- Handles rate limiting
-- Batch processing
-- Progress tracking
-- Error handling
-- Private playlist support
-
-## Quick Start
-
-1. Clone this repository:
-```bash
-git clone https://github.com/yourusername/spotify-youtube-migrator.git
-cd spotify-youtube-migrator
-```
-
-2. Install dependencies:
+1. Install the required dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Choose your migration direction:
-   - For YouTube to Spotify: See [YouTube to Spotify Guide](yt2spotify_README.md)
-   - For Spotify to YouTube: See [Spotify to YouTube Guide](spotify2yt_README.md)
+2. Set up Spotify credentials:
+   - Create a `.env` file in the project directory
+   - Add your Spotify credentials:
+   ```
+   SPOTIPY_CLIENT_ID=your_spotify_client_id
+   SPOTIPY_CLIENT_SECRET=your_spotify_client_secret
+   SPOTIPY_REDIRECT_URI=your_spotify_redirect_uri
+   ```
 
-## Requirements
+## Usage
 
-- Python 3.6 or higher
-- Spotify account
-- Google account
-- YouTube Data API v3 enabled
-- Required Python packages (see requirements.txt)
-
-## Project Structure
-
-```
-spotify-youtube-migrator/
-├── README.md                 # This file
-├── yt2spotify_README.md      # YouTube to Spotify documentation
-├── spotify2yt_README.md      # Spotify to YouTube documentation
-├── yt2spotify.py            # YouTube to Spotify script
-├── spotify2yt.py            # Spotify to YouTube script
-├── requirements.txt         # Python dependencies
-└── .env                     # Environment variables (create this)
+1. Basic usage (with default playlist name):
+```bash
+python yt2spotify.py --playlist_url "https://www.youtube.com/playlist?list=YOUR_PLAYLIST_ID"
 ```
 
-## Contributing
+2. With custom playlist name:
+```bash
+python yt2spotify.py --playlist_url "https://www.youtube.com/playlist?list=YOUR_PLAYLIST_ID" --playlist_name "My Custom Playlist"
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+3. Delete existing playlist with same name:
+```bash
+python yt2spotify.py --playlist_url "https://www.youtube.com/playlist?list=YOUR_PLAYLIST_ID" --playlist_name "My Custom Playlist" --delete
+```
+
+Command-line Arguments:
+- `--playlist_url` (required): The URL of your YouTube playlist
+- `--playlist_name`: Name for the Spotify playlist (default: "youtube")
+- `--delete`: Delete existing playlist with same name without prompting
+
+The script will:
+- Extract song titles from the YouTube playlist
+- Clean and parse the titles to extract artist and song names
+- Search for each song on Spotify
+- Create a new private Spotify playlist (or use existing one)
+- Add the found songs to the playlist
+- Save progress to a pickle file for resuming if needed
+
+## Features
+
+- Migrates entire YouTube playlists to Spotify
+- Smart title parsing to extract artist and song names
+- Handles rate limiting and retries
+- Creates private playlists by default
+- Batch processing to avoid API limits
+- Progress saving and resuming
+- Duplicate track prevention
+- Error handling and retries
+
+## Notes
+
+- The script creates a pickle file to store track URIs for resuming
+- Spotify playlists are created as private by default
+- The script uses the first search result for each song
+- Rate limiting is implemented to avoid API quota issues
+- Title parsing removes common YouTube video indicators (e.g., "official", "lyrics", "video")
+
+## Troubleshooting
+
+1. If songs aren't being found:
+   - The title parsing might not be accurate for some formats
+   - Try modifying the `extract_song_name` function for your specific playlist format
+
+2. If you get authentication errors:
+   - Make sure your Spotify credentials are correct in the `.env` file
+   - Verify that you've granted the necessary permissions
+
+3. If the script stops unexpectedly:
+   - Check the pickle file for saved progress
+   - Run the script again with the same parameters to resume
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- [Spotipy](https://github.com/spotipy-dev/spotipy) - Spotify Web API wrapper
-- [Google API Python Client](https://github.com/googleapis/google-api-python-client) - YouTube Data API wrapper 
+This project is licensed under the MIT License - see the LICENSE file for details. 

@@ -42,17 +42,32 @@ pip install -r requirements.txt
 
 ## Usage
 
-1. Run the script:
+1. Basic usage (with default playlist name):
 ```bash
-python spotify2yt.py
+python spotify2yt.py "https://open.spotify.com/playlist/YOUR_PLAYLIST_ID"
 ```
 
-2. The script will:
-   - Open your browser for YouTube authentication
-   - Fetch tracks from your Spotify playlist
-   - Create a new private YouTube playlist
-   - Search for each song on YouTube
-   - Add the found videos to your playlist
+2. With custom playlist name:
+```bash
+python spotify2yt.py "https://open.spotify.com/playlist/YOUR_PLAYLIST_ID" --name "My Custom Playlist"
+```
+
+3. With custom name and description:
+```bash
+python spotify2yt.py "https://open.spotify.com/playlist/YOUR_PLAYLIST_ID" --name "My Custom Playlist" --description "My favorite songs"
+```
+
+Command-line Arguments:
+- `spotify_url` (required): The URL of your Spotify playlist
+- `--name`: Custom name for the YouTube playlist (default: "Spotify Playlist")
+- `--description`: Custom description for the YouTube playlist (default: "Migrated from Spotify")
+
+The script will:
+- Open your browser for YouTube authentication
+- Fetch tracks from your Spotify playlist
+- Create a new private YouTube playlist
+- Search for each song on YouTube
+- Add the found videos to your playlist
 
 ## Features
 
@@ -63,6 +78,8 @@ python spotify2yt.py
 - Batch processing to avoid API limits
 - Progress tracking
 - Error handling
+- Custom playlist naming and description
+- Support for Spotify playlist URLs
 
 ## Notes
 

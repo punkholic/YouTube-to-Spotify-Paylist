@@ -8,6 +8,7 @@ import pickle
 import argparse
 from dotenv import load_dotenv
 import time
+import re
 
 load_dotenv()
 
@@ -130,11 +131,28 @@ def add_to_youtube_playlist(youtube, playlist_id, video_ids):
         print(f"Error adding videos to playlist: {str(e)}")
         return False
 
+def extract_playlist_id(playlist_url):
+    """Extract playlist ID from Spotify URL."""
+    # Match pattern: /playlist/{id} or playlist/{id}
+    pattern = r'playlist/([a-zA-Z0-9]+)'
+    match = re.search(pattern, playlist_url)
+    if match:
+        return match.group(1)
+    return None
+
 def main():
-    # Hardcoded values for testing
-    playlist_id = "1dhqcBHA3xvCFKbfLDaqJT"  # Example Spotify playlist ID
-    playlist_name = "My Test Playlist"
-    description = "Test playlist migrated from Spotify"
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='Migrate Spotify playlist to YouTube')
+    parser.add_argument('spotify_url', help='Spotify playlist URL')
+    parser.add_argument('--name', help='YouTube playlist name (default: Spotify Playlist)', default='Spotify Playlist')
+    parser.add_argument('--description', help='YouTube playlist description', default='Migrated from Spotify')
+    args = parser.parse_args()
+
+    # Extract playlist ID from URL
+    playlist_id = extract_playlist_id(args.spotify_url)
+    if not playlist_id:
+        print("Invalid Spotify playlist URL. Please provide a valid URL.")
+        return
 
     # Set up YouTube API
     print("Setting up YouTube API...")
@@ -152,8 +170,8 @@ def main():
         return
 
     # Create YouTube playlist
-    print(f"Creating YouTube playlist: {playlist_name}")
-    youtube_playlist_id = create_youtube_playlist(youtube, playlist_name, description)
+    print(f"Creating YouTube playlist: {args.name}")
+    youtube_playlist_id = create_youtube_playlist(youtube, args.name, args.description)
     
     if not youtube_playlist_id:
         print("Failed to create YouTube playlist.")

@@ -2,8 +2,12 @@
 
 A collection of scripts to migrate playlists between Spotify and YouTube. This repository contains two main scripts:
 
-1. [YouTube to Spotify Playlist Migrator](README/yt2spotify_README.md) - Migrate playlists from YouTube to Spotify
-2. [Spotify to YouTube Playlist Migrator](README/spotify2yt_README.md) - Migrate playlists from Spotify to YouTube
+
+## Navigation
+
+- [API Setup Guide](README/API_SETUP.md) - Detailed instructions for setting up Spotify and YouTube API credentials
+- [YouTube to Spotify Guide](README/yt2spotify_README.md) - Complete guide for migrating from YouTube to Spotify
+- [Spotify to YouTube Guide](README/spotify2yt_README.md) - Complete guide for migrating from Spotify to YouTube
 
 ## Overview
 
@@ -23,7 +27,7 @@ This project provides tools to help you transfer your music playlists between Sp
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/spotify-youtube-migrator.git
+git clone https://github.com/punkholic/spotify-youtube-migrator.git
 cd spotify-youtube-migrator
 ```
 
