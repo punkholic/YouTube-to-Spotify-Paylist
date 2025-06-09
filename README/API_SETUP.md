@@ -79,42 +79,4 @@ This guide will walk you through setting up the necessary API credentials for bo
    SPOTIPY_REDIRECT_URI=https://7cfe-2400-1a00-1b2c-5edf-4042-f862-4f9a-3909.ngrok-free.app/callback
    ```
 
-2. Verify `client_secrets.json` is in your project directory
-
-3. Run the script:
-   ```bash
-   python spotify2yt.py  # or yt2spotify.py
-   ```
-
-## Troubleshooting
-
-### Spotify API Issues
-- If you get "Invalid client" error:
-  - Double-check your Client ID and Secret
-  - Make sure they're correctly copied to `.env`
-- If you get "Invalid redirect URI" error:
-  - Verify the redirect URI matches exactly in both Spotify Dashboard and `.env`
-
-### YouTube API Issues
-- If you get "redirect_uri_mismatch" error:
-  - Add `https://7cfe-2400-1a00-1b2c-5edf-4042-f862-4f9a-3909.ngrok-free.app/` to authorized redirect URIs
-- If you get "access_denied" error:
-  - Make sure you're added as a test user
-  - Verify the YouTube scope is added
-- If you get "quota exceeded" error:
-  - YouTube API has daily quotas
-  - Consider implementing caching or rate limiting
-
-## Security Notes
-
-- Never commit your `.env` file or `client_secrets.json` to version control
-- Keep your API credentials secure
-- Regularly rotate your credentials if they're compromised
-- Use environment variables in production
-
-## Additional Resources
-
-- [Spotify Web API Documentation](https://developer.spotify.com/documentation/web-api/)
-- [YouTube Data API Documentation](https://developers.google.com/youtube/v3)
-- [Google Cloud Console](https://console.cloud.google.com/)
-- [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/) 
+2. Verify `client_secrets.json`
