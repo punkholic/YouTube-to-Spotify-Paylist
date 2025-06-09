@@ -11,7 +11,7 @@ This guide will walk you through setting up the necessary API credentials for bo
    - App name: "Spotify-YouTube Migrator" (or any name you prefer)
    - App description: "A tool to migrate playlists between Spotify and YouTube"
    - Website: (Optional) Your website or GitHub repo
-   - Redirect URI: `http://localhost:8888/callback`
+   - Redirect URI: `https://localhost:8888/callback`
 5. Accept the terms and click "Create"
 6. Once created, you'll see your:
    - Client ID
